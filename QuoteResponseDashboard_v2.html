@@ -157,7 +157,7 @@ var currentSearch = '';
 var expandedQuote = null;
 
 var APP_NAME = 'type-formsheet-2-18-21';
-var REPORT_NAME = 'All_Supplier_Manufacture_Material_Quotes';
+var REPORT_NAME = 'Supplier_Manufacture_Material_Report';
 
 function getStatusInfo(svStatus) {
     if (!svStatus || svStatus === '') return { dot: 'dot-red', label: 'No response', noResponse: true };
@@ -374,24 +374,29 @@ function searchRecords(val) {
 }
 
 function fetchData() {
+    console.log('fetchData firing, APP:', APP_NAME, 'REPORT:', REPORT_NAME);
     ZOHO.CREATOR.API.getAllRecords({
         appName: APP_NAME,
         reportName: REPORT_NAME,
         page: 1,
         pageSize: 200
     }).then(function(response) {
+        console.log('API response:', JSON.stringify(response).substring(0, 500));
         if (response && response.data && response.data.length > 0) {
+            console.log('First record keys:', Object.keys(response.data[0]));
+            console.log('First record:', JSON.stringify(response.data[0]));
             allRecords = response.data;
             groupedQuotes = processRecords(allRecords);
             updateKPIs(groupedQuotes);
             renderTable(groupedQuotes);
         } else {
-            document.getElementById('tableContainer').innerHTML = '<div class="no-data">No supplier quote records found. Submit a quote to see data here.</div>';
+            console.log('No data or empty response:', JSON.stringify(response));
+            document.getElementById('tableContainer').innerHTML = '<div class="no-data">No data returned. Response: ' + JSON.stringify(response).substring(0,200) + '</div>';
             updateKPIs({});
         }
     }).catch(function(err) {
-        document.getElementById('tableContainer').innerHTML = '<div class="no-data">Error loading data. Check report name and permissions.</div>';
         console.error('Widget error:', err);
+        document.getElementById('tableContainer').innerHTML = '<div class="no-data">API Error: ' + JSON.stringify(err).substring(0,300) + '</div>';
     });
 }
 

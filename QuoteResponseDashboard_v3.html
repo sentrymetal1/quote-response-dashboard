@@ -4,95 +4,75 @@
     <meta charset="UTF-8">
     <title>Material Compass Dashboard</title>
     <link href="https://fonts.googleapis.com" rel="stylesheet">
-    <!-- Essential Zoho SDK -->
     <script src="https://js.zohostatic.com"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'DM Sans', sans-serif; font-size: 13px; background: #f3f5f8; color: #3a5272; }
-
-        /* Header */
+        body { font-family: 'DM Sans', sans-serif; font-size: 12px; background: #f3f5f8; color: #3a5272; }
         .hdr { background: #5f94ce; color: #fff; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; }
-        .hdr-title { font-size: 14px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
-
-        /* KPI Row */
+        .hdr-title { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
         .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 15px 20px 0; }
         .kpi { background: #fff; border: 1px solid #e0e6ee; border-radius: 8px; padding: 15px; }
-        .kpi-label { font-size: 10px; font-weight: 700; color: #7a90a8; text-transform: uppercase; margin-bottom: 8px; }
-        .kpi-val { font-size: 24px; font-weight: 700; line-height: 1; }
-        .blue { color: #5f94ce; } .green { color: #2e7d32; } .red { color: #c0392b; } .amber { color: #e65100; }
-
-        /* Filter Bar */
-        .filter-bar { display: flex; align-items: center; gap: 10px; padding: 15px 20px 0; }
-        .fpill { background: #fff; border: 1px solid #d0dcec; border-radius: 15px; padding: 5px 15px; font-size: 11px; cursor: pointer; color: #7a90a8; font-weight: 600; outline: none; }
+        .kpi-label { font-size: 10px; font-weight: 700; color: #7a90a8; text-transform: uppercase; margin-bottom: 5px; }
+        .kpi-val { font-size: 22px; font-weight: 700; line-height: 1; }
+        .blue { color: #5f94ce; } .green { color: #2e7d32; } .amber { color: #e65100; }
+        .filter-bar { display: flex; align-items: center; gap: 8px; padding: 15px 20px 0; }
+        .fpill { background: #fff; border: 1px solid #d0dcec; border-radius: 15px; padding: 4px 12px; font-size: 11px; cursor: pointer; color: #7a90a8; font-weight: 600; }
         .fpill.active { background: #5f94ce; color: #fff; border-color: #5f94ce; }
-        .search-box { margin-left: auto; padding: 7px 12px; border-radius: 6px; border: 1px solid #d0dcec; width: 250px; font-family: inherit; }
-
-        /* Table */
+        .search-box { margin-left: auto; padding: 6px 12px; border-radius: 6px; border: 1px solid #d0dcec; width: 220px; }
         .section { margin: 15px 20px; background: #fff; border: 1px solid #e0e6ee; border-radius: 10px; overflow: hidden; }
-        .sec-hdr { background: #f8fafc; border-bottom: 1px solid #e0e6ee; padding: 10px 15px; font-size: 11px; font-weight: 700; color: #5f94ce; text-transform: uppercase; }
-        .quote-table { width: 100%; border-collapse: collapse; }
-        .quote-table th { background: #f8fafc; font-size: 10px; color: #7a90a8; text-transform: uppercase; padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e6ee; white-space: nowrap; }
-        .quote-table td { padding: 12px 15px; border-bottom: 1px solid #f0f3f7; font-size: 13px; }
-        
-        .badge { padding: 3px 10px; border-radius: 12px; font-size: 10px; font-weight: 600; display: inline-block; }
+        .sec-hdr { background: #f8fafc; border-bottom: 1px solid #e0e6ee; padding: 10px 15px; font-size: 10px; font-weight: 700; color: #5f94ce; text-transform: uppercase; }
+        .quote-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        .quote-table th { background: #f8fafc; font-size: 9px; color: #7a90a8; text-transform: uppercase; padding: 10px 15px; text-align: left; border-bottom: 1px solid #e0e6ee; }
+        .quote-table td { padding: 10px 15px; border-bottom: 1px solid #f0f3f7; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .badge { padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; }
         .badge-open { background: #e0f2fe; color: #0369a1; }
         .badge-complete { background: #dcfce7; color: #166534; }
-
-        .loading, .no-data { padding: 50px; text-align: center; color: #7a90a8; font-style: italic; }
+        .loading, .no-data { padding: 40px; text-align: center; color: #7a90a8; font-style: italic; }
     </style>
 </head>
 <body>
 
-<div class="hdr">
-    <span class="hdr-title">Material Compass — Quote Dashboard</span>
-</div>
+<div class="hdr"><span class="hdr-title">Material Compass — Quote Response Dashboard</span></div>
 
 <div class="kpi-row">
     <div class="kpi"><div class="kpi-label">Total Quotes</div><div class="kpi-val blue" id="kpiTotal">0</div></div>
     <div class="kpi"><div class="kpi-label">Completed</div><div class="kpi-val green" id="kpiComplete">0</div></div>
     <div class="kpi"><div class="kpi-label">Open</div><div class="kpi-val amber" id="kpiOpen">0</div></div>
-    <div class="kpi"><div class="kpi-label">Total weight</div><div class="kpi-val blue" id="kpiWeight">0</div></div>
+    <div class="kpi"><div class="kpi-label">Total Weight</div><div class="kpi-val blue" id="kpiWeight">0</div></div>
 </div>
 
 <div class="filter-bar">
     <button class="fpill active" onclick="setFilter('All', this)">All</button>
     <button class="fpill" onclick="setFilter('Open', this)">Open</button>
     <button class="fpill" onclick="setFilter('Completed', this)">Completed</button>
-    <input type="text" class="search-box" id="searchBox" placeholder="Search Projects, Suppliers..." oninput="searchRecords(this.value)">
+    <input type="text" class="search-box" placeholder="Search..." oninput="searchRecords(this.value)">
 </div>
 
 <div class="section">
-    <div class="sec-hdr">Supplier Response Summary</div>
-    <div id="tableContainer">
-        <div class="loading">Initializing connection to Zoho...</div>
-    </div>
+    <div class="sec-hdr">Detailed Quote Status</div>
+    <div id="tableContainer"><div class="loading">Loading records...</div></div>
 </div>
 
 <script>
     let allRecords = [];
 
-    // Initialize Zoho SDK
     ZOHO.CREATOR.init().then(function() {
         fetchData();
     });
 
     function fetchData() {
-        const config = {
+        ZOHO.CREATOR.API.getAllRecords({
             appName: "type-formsheet-2-18-21",
             reportName: "All_Supplier_Manufacture_Material_Quotes"
-        };
-
-        ZOHO.CREATOR.API.getAllRecords(config).then(function(response) {
+        }).then(function(response) {
             allRecords = response.data || [];
             updateKPIs(allRecords);
             renderTable(allRecords);
         }).catch(err => {
-            console.error("Fetch Error:", err);
-            document.getElementById('tableContainer').innerHTML = `<div class="no-data">No data found in report. Verify link name: All_Supplier_Manufacture_Material_Quotes</div>`;
+            document.getElementById('tableContainer').innerHTML = `<div class="no-data">No data found in report.</div>`;
         });
     }
 
-    // Helper to handle Zoho Lookup Objects (displays text instead of [object Object])
     function getVal(field) {
         if (!field) return '-';
         return typeof field === 'object' ? field.display_value : field;
@@ -102,45 +82,27 @@
         document.getElementById('kpiTotal').innerText = data.length;
         document.getElementById('kpiComplete').innerText = data.filter(r => r.Status === "Completed").length;
         document.getElementById('kpiOpen').innerText = data.filter(r => r.Status !== "Completed").length;
-        
-        // Summing Total Weight
-        let weightSum = data.reduce((acc, r) => acc + (parseFloat(r.Total_Weight) || 0), 0);
-        document.getElementById('kpiWeight').innerText = weightSum.toLocaleString();
-    }
-
-    function setFilter(status, btn) {
-        document.querySelectorAll('.fpill').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        
-        let filtered = (status === 'All') ? allRecords : allRecords.filter(r => r.Status === status);
-        renderTable(filtered);
-    }
-
-    function searchRecords(query) {
-        const q = query.toLowerCase();
-        const filtered = allRecords.filter(r => 
-            getVal(r.project_id).toLowerCase().includes(q) ||
-            getVal(r.supplier_id).toLowerCase().includes(q) ||
-            getVal(r.manufacture_id).toLowerCase().includes(q)
-        );
-        renderTable(filtered);
+        let weight = data.reduce((acc, r) => acc + (parseFloat(r.Total_Weight_Quoted) || 0), 0);
+        document.getElementById('kpiWeight').innerText = weight.toLocaleString();
     }
 
     function renderTable(data) {
         if (data.length === 0) {
-            document.getElementById('tableContainer').innerHTML = `<div class="no-data">No records found.</div>`;
+            document.getElementById('tableContainer').innerHTML = `<div class="no-data">No records match filters.</div>`;
             return;
         }
 
         let html = `<table class="quote-table">
             <thead>
                 <tr>
-                    <th>Project</th>
-                    <th>Supplier</th>
-                    <th>Manufacture</th>
-                    <th>Sent</th>
-                    <th>Due</th>
-                    <th>Status</th>
+                    <th style="width: 15%">Project</th>
+                    <th style="width: 15%">Supplier</th>
+                    <th style="width: 10%">Sent</th>
+                    <th style="width: 10%">Due</th>
+                    <th style="width: 12%">Amount</th>
+                    <th style="width: 13%">Lead Time</th>
+                    <th style="width: 15%">Notes</th>
+                    <th style="width: 10%">Status</th>
                 </tr>
             </thead>
             <tbody>`;
@@ -150,15 +112,30 @@
             html += `<tr>
                 <td>${getVal(rec.project_id)}</td>
                 <td><strong>${getVal(rec.supplier_id)}</strong></td>
-                <td>${getVal(rec.manufacture_id)}</td>
                 <td>${rec.SENT || '-'}</td>
                 <td>${rec.DUE || '-'}</td>
-                <td><span class="badge ${statusClass}">${rec.Status || 'Pending'}</span></td>
+                <td>$${parseFloat(rec.Total_Amount_of_Quote || 0).toLocaleString()}</td>
+                <td>${rec.Lead_Time_For_Ship_Complete || '-'}</td>
+                <td title="${rec.Shipping_Notes || ''}">${rec.Shipping_Notes || '-'}</td>
+                <td><span class="badge ${statusClass}">${rec.Status || 'Open'}</span></td>
             </tr>`;
         });
-
         html += `</tbody></table>`;
         document.getElementById('tableContainer').innerHTML = html;
+    }
+
+    function setFilter(status, btn) {
+        document.querySelectorAll('.fpill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderTable(status === 'All' ? allRecords : allRecords.filter(r => r.Status === status));
+    }
+
+    function searchRecords(q) {
+        const query = q.toLowerCase();
+        renderTable(allRecords.filter(r => 
+            getVal(r.project_id).toLowerCase().includes(query) || 
+            getVal(r.supplier_id).toLowerCase().includes(query)
+        ));
     }
 </script>
 

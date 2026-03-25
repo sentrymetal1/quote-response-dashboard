@@ -1,414 +1,138 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Quote Response Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://js.zohostatic.com/creator/widgets/version/1.0/widgetsdk-min.js"></script>
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'DM Sans', sans-serif; font-size: 13px; background: #f3f5f8; }
+    <meta charset="UTF-8">
+    <title>Quote Response Dashboard</title>
+    <link href="https://fonts.googleapis.com" rel="stylesheet">
+    <!-- Essential Zoho SDK -->
+    <script src="https://js.zohostatic.com"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'DM Sans', sans-serif; font-size: 13px; background: #f3f5f8; color: #3a5272; }
 
-.hdr { background: #5f94ce; color: #fff; padding: 10px 18px; display: flex; align-items: center; justify-content: space-between; }
-.hdr-title { font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
-.hdr-right { display: flex; gap: 8px; }
-.hdr-badge { background: rgba(255,255,255,.18); border-radius: 4px; padding: 3px 10px; font-size: 11px; }
-.hdr-badge strong { font-weight: 600; }
+        /* Header */
+        .hdr { background: #5f94ce; color: #fff; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; }
+        .hdr-title { font-size: 14px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+        .hdr-badge { background: rgba(255,255,255,.18); border-radius: 4px; padding: 4px 12px; font-size: 11px; }
 
-.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 14px 18px 0; }
-.kpi { background: #fff; border: 1px solid #e0e6ee; border-radius: 8px; padding: 12px 14px; }
-.kpi-label { font-size: 10px; font-weight: 600; color: #7a90a8; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
-.kpi-val { font-size: 22px; font-weight: 600; line-height: 1; }
-.kpi-val.blue { color: #5f94ce; }
-.kpi-val.red { color: #c0392b; }
-.kpi-val.green { color: #2e7d32; }
-.kpi-val.amber { color: #e65100; }
-.kpi-sub { font-size: 10px; color: #9db0c8; margin-top: 3px; }
+        /* KPI Row */
+        .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 15px 20px 0; }
+        .kpi { background: #fff; border: 1px solid #e0e6ee; border-radius: 8px; padding: 15px; text-align: left; }
+        .kpi-label { font-size: 10px; font-weight: 700; color: #7a90a8; text-transform: uppercase; margin-bottom: 8px; }
+        .kpi-val { font-size: 24px; font-weight: 700; line-height: 1; }
+        .blue { color: #5f94ce; } .green { color: #2e7d32; } .red { color: #c0392b; } .amber { color: #e65100; }
 
-.filter-bar { display: flex; align-items: center; gap: 6px; padding: 12px 18px 0; flex-wrap: wrap; }
-.filter-label { font-size: 10px; font-weight: 600; color: #7a90a8; text-transform: uppercase; letter-spacing: .06em; margin-right: 4px; }
-.fpill { background: #fff; border: 1px solid #d0dcec; border-radius: 12px; padding: 4px 12px; font-size: 11px; color: #7a90a8; cursor: pointer; font-family: inherit; }
-.fpill.active { background: #5f94ce; color: #fff; border-color: #5f94ce; font-weight: 600; }
-.search-box { margin-left: auto; background: #fff; border: 1px solid #d0dcec; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-family: inherit; width: 200px; color: #3a5272; }
-
-.section { margin: 14px 18px 0; background: #fff; border: 1px solid #e0e6ee; border-radius: 10px; overflow: hidden; }
-.sec-hdr { background: #5f94ce; color: #fff; padding: 7px 14px; font-size: 9px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; }
-
-.quote-table { width: 100%; border-collapse: collapse; }
-.quote-table th { font-size: 9px; font-weight: 600; color: #7a90a8; text-transform: uppercase; letter-spacing: .06em; padding: 8px 14px; border-bottom: 1px solid #e0e6ee; text-align: left; background: #f8fafc; white-space: nowrap; }
-.quote-table td { padding: 9px 14px; border-bottom: 1px solid #f0f3f7; font-size: 12px; color: #3a5272; vertical-align: middle; }
-.quote-row { cursor: pointer; transition: background .1s; }
-.quote-row:hover td { background: #f5f8fc; }
-.quote-row.selected td { background: #edf4fb; }
-.expand-icon { display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: #e0e6ee; color: #5f94ce; text-align: center; line-height: 14px; font-size: 10px; font-weight: 700; margin-right: 6px; transition: transform .2s; }
-.expand-icon.open { transform: rotate(90deg); background: #5f94ce; color: #fff; }
-
-.badge { display: inline-block; border-radius: 10px; padding: 2px 8px; font-size: 10px; font-weight: 600; white-space: nowrap; }
-.badge-open { background: #E6F1FB; color: #185FA5; }
-.badge-partial { background: #FAEEDA; color: #854F0B; }
-.badge-complete { background: #EAF3DE; color: #3B6D11; }
-.badge-overdue { background: #FCEBEB; color: #A32D2D; }
-
-.progress-wrap { display: flex; align-items: center; gap: 6px; }
-.progress-bar { height: 5px; background: #e0e6ee; border-radius: 3px; width: 60px; overflow: hidden; }
-.progress-fill { height: 100%; border-radius: 3px; }
-.pf-green { background: #2e7d32; }
-.pf-amber { background: #e65100; }
-.pf-red { background: #c0392b; }
-.progress-text { font-size: 10px; color: #7a90a8; white-space: nowrap; }
-
-.supplier-panel { display: none; border-top: 2px solid #5f94ce; }
-.supplier-panel.open { display: table-row; }
-.sp-inner { padding: 0; }
-.sp-action-bar { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; background: #f8fafc; border-bottom: 1px solid #e0e6ee; }
-.sp-title { font-size: 11px; font-weight: 600; color: #3a5272; }
-.sp-btns { display: flex; gap: 6px; }
-.sp-btn { background: #fff; border: 1px solid #d0dcec; border-radius: 5px; padding: 4px 10px; font-size: 10px; color: #7a90a8; cursor: pointer; font-family: inherit; }
-.sp-btn.primary { background: #5f94ce; color: #fff; border-color: #5f94ce; font-weight: 600; }
-.sp-btn.warn { color: #c0392b; border-color: #f09595; background: #fff8f8; }
-
-.sup-table { width: 100%; border-collapse: collapse; }
-.sup-table th { font-size: 9px; font-weight: 600; color: #7a90a8; text-transform: uppercase; letter-spacing: .06em; padding: 6px 14px; border-bottom: 1px solid #e0e6ee; text-align: left; background: #fff; white-space: nowrap; }
-.sup-table td { padding: 7px 14px; border-bottom: 1px solid #f5f8fc; font-size: 11px; color: #3a5272; vertical-align: middle; }
-.sup-table tr:last-child td { border-bottom: none; }
-.sup-table tr.no-response td { background: #fff8f8; }
-
-.status-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 5px; vertical-align: middle; flex-shrink: 0; }
-.dot-green { background: #2e7d32; }
-.dot-amber { background: #e65100; }
-.dot-red { background: #c0392b; }
-.dot-gray { background: #888780; }
-.dot-blue { background: #5f94ce; }
-
-.mini-btn { background: #f5f8fc; border: 1px solid #e0e6ee; border-radius: 4px; padding: 3px 7px; font-size: 10px; color: #7a90a8; cursor: pointer; font-family: inherit; white-space: nowrap; margin-right: 3px; }
-.mini-btn.warn { color: #c0392b; border-color: #f09595; background: #fff8f8; }
-
-.legend-row { display: flex; gap: 14px; padding: 8px 14px; border-top: 1px solid #e0e6ee; background: #f8fafc; flex-wrap: wrap; }
-.legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #7a90a8; }
-
-.loading { text-align: center; padding: 40px; color: #7a90a8; font-size: 13px; }
-.no-data { text-align: center; padding: 30px; color: #9db0c8; font-size: 12px; }
-
-.footer-spacer { height: 20px; }
-</style>
+        /* Table Styles */
+        .section { margin: 15px 20px; background: #fff; border: 1px solid #e0e6ee; border-radius: 10px; overflow: hidden; }
+        .sec-hdr { background: #f8fafc; border-bottom: 1px solid #e0e6ee; padding: 10px 15px; font-size: 11px; font-weight: 700; color: #5f94ce; text-transform: uppercase; }
+        .quote-table { width: 100%; border-collapse: collapse; }
+        .quote-table th { background: #f8fafc; font-size: 10px; color: #7a90a8; text-transform: uppercase; padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e6ee; }
+        .quote-table td { padding: 12px 15px; border-bottom: 1px solid #f0f3f7; font-size: 13px; }
+        
+        .badge { padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 600; }
+        .badge-open { background: #e0f2fe; color: #0369a1; }
+        
+        .loading, .no-data { padding: 40px; text-align: center; color: #7a90a8; font-style: italic; }
+    </style>
 </head>
 <body>
 
 <div class="hdr">
-  <span class="hdr-title">Material Compass — Quote Response Dashboard</span>
-  <div class="hdr-right">
-    <span class="hdr-badge" id="badgeQuotes"><strong>—</strong> Quotes</span>
-    <span class="hdr-badge" id="badgeNoResponse"><strong>—</strong> No Response</span>
-  </div>
+    <span class="hdr-title">Material Compass — Quote Dashboard</span>
+    <div class="hdr-badge" id="badgeQuotes">Initializing...</div>
 </div>
 
 <div class="kpi-row">
-  <div class="kpi">
-    <div class="kpi-label">Total Suppliers Invited</div>
-    <div class="kpi-val blue" id="kpiTotal">—</div>
-    <div class="kpi-sub">All active quotes</div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-label">Responses Received</div>
-    <div class="kpi-val green" id="kpiResponded">—</div>
-    <div class="kpi-sub" id="kpiPct">—</div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-label">No Response</div>
-    <div class="kpi-val red" id="kpiNoResp">—</div>
-    <div class="kpi-sub">Action needed</div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-label">Completed Quotes</div>
-    <div class="kpi-val amber" id="kpiComplete">—</div>
-    <div class="kpi-sub">Fully responded</div>
-  </div>
-</div>
-
-<div class="filter-bar">
-  <span class="filter-label">Filter:</span>
-  <button class="fpill active" onclick="setFilter('all',this)">All</button>
-  <button class="fpill" onclick="setFilter('open',this)">Open</button>
-  <button class="fpill" onclick="setFilter('partial',this)">Partial</button>
-  <button class="fpill" onclick="setFilter('complete',this)">Complete</button>
-  <button class="fpill" onclick="setFilter('overdue',this)">Overdue</button>
-  <input class="search-box" type="text" placeholder="Search quote or supplier..." oninput="searchRecords(this.value)" id="searchBox">
+    <div class="kpi">
+        <div class="kpi-label">Total Quotes</div>
+        <div class="kpi-val blue" id="kpiTotal">0</div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-label">Completed</div>
+        <div class="kpi-val green" id="kpiComplete">0</div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-label">Pending</div>
+        <div class="kpi-val amber" id="kpiPending">0</div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-label">At Risk</div>
+        <div class="kpi-val red" id="kpiRisk">0</div>
+    </div>
 </div>
 
 <div class="section">
-  <div class="sec-hdr">● Quote Summary — click a row to expand supplier responses</div>
-  <div id="tableContainer"><div class="loading">Loading quote data...</div></div>
+    <div class="sec-hdr">Supplier Response Summary</div>
+    <div id="tableContainer">
+        <div class="loading">Connecting to Zoho Creator...</div>
+    </div>
 </div>
-
-<div class="legend-row" style="margin: 0 18px; border: 1px solid #e0e6ee; border-top: none; border-radius: 0 0 10px 10px; background: #f8fafc;">
-  <div class="legend-item"><span class="status-dot dot-green"></span>Quoted / Submitted</div>
-  <div class="legend-item"><span class="status-dot dot-amber"></span>Alteration / Revised</div>
-  <div class="legend-item"><span class="status-dot dot-red"></span>No response</div>
-  <div class="legend-item"><span class="status-dot dot-gray"></span>Closed - not filled</div>
-  <div class="legend-item"><span class="status-dot dot-blue"></span>PO Pending</div>
-</div>
-
-<div class="footer-spacer"></div>
 
 <script>
-var allRecords = [];
-var groupedQuotes = {};
-var currentFilter = 'all';
-var currentSearch = '';
-var expandedQuote = null;
+    // 1. Handshake with Zoho Creator
+    ZOHO.CREATOR.init().then(function(data) {
+        console.log("SDK Initialized");
+        fetchDashboardData();
+    });
 
-var OWNER_NAME = 'mark_sentrymetal';
-var APP_NAME = 'type-formsheet-2-18-21';
-var REPORT_NAME = 'All_Supplier_Manufacture_Material_Quotes';
+    // 2. Fetch Data from your specific Report
+    async function fetchDashboardData() {
+        const config = {
+            appName: "type-formsheet-2-18-21",
+            reportName: "All_Supplier_Manufacture_Material_Quotes"
+        };
 
-function getStatusInfo(svStatus) {
-    if (!svStatus || svStatus === '') return { dot: 'dot-red', label: 'No response', noResponse: true };
-    var s = svStatus.toString().toLowerCase();
-    if (s.indexOf('submitted') >= 0 || s.indexOf('closed - completed') >= 0) return { dot: 'dot-green', label: svStatus, noResponse: false };
-    if (s.indexOf('alteration') >= 0 || s.indexOf('revised') >= 0) return { dot: 'dot-amber', label: svStatus, noResponse: false };
-    if (s.indexOf('not filled') >= 0 || s.indexOf('cancelled') >= 0) return { dot: 'dot-gray', label: svStatus, noResponse: false };
-    if (s.indexOf('po') >= 0 || s.indexOf('purchase order') >= 0) return { dot: 'dot-blue', label: svStatus, noResponse: false };
-    if (s.indexOf('open') >= 0 || s.indexOf('not submitted') >= 0 || s.indexOf('past due') >= 0) return { dot: 'dot-red', label: svStatus, noResponse: true };
-    return { dot: 'dot-red', label: svStatus, noResponse: true };
-}
-
-function getQuoteStatus(suppliers) {
-    var total = suppliers.length;
-    var responded = suppliers.filter(function(s) { return !getStatusInfo(s.svStatus).noResponse; }).length;
-    var overdue = suppliers.some(function(s) { return s.svStatus && s.svStatus.toString().toLowerCase().indexOf('past due') >= 0; });
-    if (overdue) return 'overdue';
-    if (responded === 0) return 'open';
-    if (responded === total) return 'complete';
-    return 'partial';
-}
-
-function statusBadge(status) {
-    var map = {
-        'open': '<span class="badge badge-open">Open</span>',
-        'partial': '<span class="badge badge-partial">Partial</span>',
-        'complete': '<span class="badge badge-complete">Complete</span>',
-        'overdue': '<span class="badge badge-overdue">Overdue</span>'
-    };
-    return map[status] || '<span class="badge badge-open">Open</span>';
-}
-
-function progressBar(responded, total) {
-    var pct = total > 0 ? Math.round((responded / total) * 100) : 0;
-    var cls = pct === 100 ? 'pf-green' : pct >= 50 ? 'pf-amber' : 'pf-red';
-    return '<div class="progress-wrap"><div class="progress-bar"><div class="progress-fill ' + cls + '" style="width:' + pct + '%"></div></div><span class="progress-text">' + responded + ' / ' + total + '</span></div>';
-}
-
-function safeStr(val) {
-    if (!val) return '';
-    if (typeof val === 'object') {
-        return val.display_value || val.ID || '';
-    }
-    return val.toString();
-}
-
-function processRecords(records) {
-    var groups = {};
-    records.forEach(function(r) {
-        var quoteKey = safeStr(r.Quote) || safeStr(r.quote_id) || 'Unknown';
-        if (!groups[quoteKey]) {
-            groups[quoteKey] = {
-                quoteDisplay: quoteKey,
-                manufacture: safeStr(r.Manufacture),
-                sent: safeStr(r.Sent) || safeStr(r.SENT) || '—',
-                due: safeStr(r.Due) || safeStr(r.DUE) || '—',
-                suppliers: []
-            };
+        try {
+            const response = await ZOHO.CREATOR.API.getAllRecords(config);
+            const records = response.data || [];
+            
+            updateDashboard(records);
+        } catch (error) {
+            console.error("Fetch Error:", error);
+            document.getElementById('tableContainer').innerHTML = `<div class="no-data">Error: Ensure the Report Link Name is correct.</div>`;
         }
-        groups[quoteKey].suppliers.push({
-            name: safeStr(r.Supplier),
-            svStatus: safeStr(r.SV_Status),
-            supplierQuote: safeStr(r.Supplier_Quote),
-            totalAmount: safeStr(r.Total_Amount_of_Quote),
-            totalWeight: safeStr(r.Total_Weight_Quoted),
-            leadTime: safeStr(r.Lead_Time_For_Ship_Complete),
-            submitAllAsIs: safeStr(r.Quote_Submit_All_As_Is),
-            shippingNotes: safeStr(r.Shipping_Notes),
-            rawId: r.ID || ''
-        });
-    });
-    return groups;
-}
-
-function updateKPIs(groups) {
-    var quoteCount = Object.keys(groups).length;
-    var totalSuppliers = 0;
-    var responded = 0;
-    var noResponse = 0;
-    var complete = 0;
-
-    Object.keys(groups).forEach(function(k) {
-        var g = groups[k];
-        totalSuppliers += g.suppliers.length;
-        var resp = g.suppliers.filter(function(s) { return !getStatusInfo(s.svStatus).noResponse; }).length;
-        responded += resp;
-        noResponse += g.suppliers.length - resp;
-        if (getQuoteStatus(g.suppliers) === 'complete') complete++;
-    });
-
-    document.getElementById('kpiTotal').textContent = totalSuppliers;
-    document.getElementById('kpiResponded').textContent = responded;
-    document.getElementById('kpiNoResp').textContent = noResponse;
-    document.getElementById('kpiComplete').textContent = complete;
-    var pct = totalSuppliers > 0 ? Math.round((responded / totalSuppliers) * 100) : 0;
-    document.getElementById('kpiPct').textContent = pct + '% response rate';
-    document.getElementById('badgeQuotes').innerHTML = '<strong>' + quoteCount + '</strong> Quotes';
-    document.getElementById('badgeNoResponse').innerHTML = '<strong>' + noResponse + '</strong> No Response';
-}
-
-function renderTable(groups) {
-    var keys = Object.keys(groups);
-
-    if (currentSearch) {
-        var s = currentSearch.toLowerCase();
-        keys = keys.filter(function(k) {
-            var g = groups[k];
-            if (g.quoteDisplay.toLowerCase().indexOf(s) >= 0) return true;
-            if (g.manufacture.toLowerCase().indexOf(s) >= 0) return true;
-            return g.suppliers.some(function(sup) { return sup.name.toLowerCase().indexOf(s) >= 0; });
-        });
     }
 
-    if (currentFilter !== 'all') {
-        keys = keys.filter(function(k) {
-            return getQuoteStatus(groups[k].suppliers) === currentFilter;
-        });
-    }
+    // 3. Populate KPIs and Table
+    function updateDashboard(records) {
+        // Update KPIs
+        document.getElementById('kpiTotal').innerText = records.length;
+        document.getElementById('badgeQuotes').innerText = `${records.length} Records Found`;
 
-    if (keys.length === 0) {
-        document.getElementById('tableContainer').innerHTML = '<div class="no-data">No quotes match the current filter.</div>';
-        return;
-    }
-
-    var html = '<table class="quote-table"><thead><tr>' +
-        '<th style="width:24px;"></th>' +
-        '<th>Quote</th>' +
-        '<th>Manufacture</th>' +
-        '<th>Sent</th>' +
-        '<th>Due</th>' +
-        '<th>Response</th>' +
-        '<th>Status</th>' +
-        '</tr></thead><tbody>';
-
-    keys.forEach(function(k) {
-        var g = groups[k];
-        var status = getQuoteStatus(g.suppliers);
-        var responded = g.suppliers.filter(function(s) { return !getStatusInfo(s.svStatus).noResponse; }).length;
-        var isExpanded = expandedQuote === k;
-
-        html += '<tr class="quote-row' + (isExpanded ? ' selected' : '') + '" onclick="toggleExpand(\'' + k.replace(/'/g, "\\'") + '\')">' +
-            '<td><span class="expand-icon' + (isExpanded ? ' open' : '') + '">&#9658;</span></td>' +
-            '<td style="font-weight:600;color:#5f94ce;">' + g.quoteDisplay + '</td>' +
-            '<td style="color:#7a90a8;">' + g.manufacture + '</td>' +
-            '<td style="color:#7a90a8;">' + g.sent + '</td>' +
-            '<td style="color:#7a90a8;">' + g.due + '</td>' +
-            '<td>' + progressBar(responded, g.suppliers.length) + '</td>' +
-            '<td>' + statusBadge(status) + '</td>' +
-            '</tr>';
-
-        if (isExpanded) {
-            html += '<tr class="supplier-panel open"><td colspan="7"><div class="sp-inner">' +
-                '<div class="sp-action-bar">' +
-                '<span class="sp-title">Supplier responses — ' + g.quoteDisplay + ' &nbsp;|&nbsp; ' + g.manufacture + '</span>' +
-                '<div class="sp-btns">' +
-                '<button class="sp-btn warn" onclick="event.stopPropagation()">Send reminders to non-responders</button>' +
-                '<button class="sp-btn primary" onclick="event.stopPropagation()">Finalize quote</button>' +
-                '</div></div>' +
-                '<table class="sup-table"><thead><tr>' +
-                '<th>Supplier</th>' +
-                '<th>Status</th>' +
-                '<th>Supplier Quote #</th>' +
-                '<th>Amount</th>' +
-                '<th>Weight Quoted</th>' +
-                '<th>Lead Time</th>' +
-                '<th>Submit All As-Is</th>' +
-                '<th>Actions</th>' +
-                '</tr></thead><tbody>';
-
-            g.suppliers.forEach(function(sup) {
-                var si = getStatusInfo(sup.svStatus);
-                var rowClass = si.noResponse ? ' class="no-response"' : '';
-                var actions = si.noResponse
-                    ? '<button class="mini-btn warn" onclick="event.stopPropagation()">Send reminder</button><button class="mini-btn" onclick="event.stopPropagation()">Enter quote</button>'
-                    : '<button class="mini-btn" onclick="event.stopPropagation()">View detail</button>';
-
-                html += '<tr' + rowClass + '>' +
-                    '<td style="font-weight:500;">' + (sup.name || '—') + '</td>' +
-                    '<td><span class="status-dot ' + si.dot + '"></span>' + (si.label || '—') + '</td>' +
-                    '<td style="color:#7a90a8;">' + (sup.supplierQuote || '—') + '</td>' +
-                    '<td>' + (sup.totalAmount || '—') + '</td>' +
-                    '<td>' + (sup.totalWeight || '—') + '</td>' +
-                    '<td>' + (sup.leadTime || '—') + '</td>' +
-                    '<td>' + (sup.submitAllAsIs || '—') + '</td>' +
-                    '<td>' + actions + '</td>' +
-                    '</tr>';
-            });
-
-            html += '</tbody></table></div></td></tr>';
+        // Build Table
+        if (records.length === 0) {
+            document.getElementById('tableContainer').innerHTML = `<div class="no-data">No records found.</div>`;
+            return;
         }
-    });
 
-    html += '</tbody></table>';
-    document.getElementById('tableContainer').innerHTML = html;
-}
+        let tableHtml = `
+            <table class="quote-table">
+                <thead>
+                    <tr>
+                        <th>Supplier</th>
+                        <th>Manufacturer</th>
+                        <th>Sent Date</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>`;
 
-function toggleExpand(quoteKey) {
-    expandedQuote = expandedQuote === quoteKey ? null : quoteKey;
-    renderTable(groupedQuotes);
-}
+        records.forEach(rec => {
+            tableHtml += `
+                <tr>
+                    <td><strong>${rec.Supplier || '-'}</strong></td>
+                    <td>${rec.Manufacturer || '-'}</td>
+                    <td>${rec.SENT || '-'}</td>
+                    <td>${rec.DUE || '-'}</td>
+                    <td><span class="badge badge-open">${rec.Status || 'Active'}</span></td>
+                </tr>`;
+        });
 
-function setFilter(f, btn) {
-    currentFilter = f;
-    expandedQuote = null;
-    document.querySelectorAll('.fpill').forEach(function(b) { b.classList.remove('active'); });
-    btn.classList.add('active');
-    renderTable(groupedQuotes);
-}
-
-function searchRecords(val) {
-    currentSearch = val;
-    expandedQuote = null;
-    renderTable(groupedQuotes);
-}
-
-function fetchData() {
-    console.log('fetchData firing, APP:', APP_NAME, 'REPORT:', REPORT_NAME);
-    ZOHO.CREATOR.API.getAllRecords({
-        appName: APP_NAME,
-        reportName: REPORT_NAME
-    }).then(function(response) {
-        console.log('API response:', JSON.stringify(response).substring(0, 500));
-        document.getElementById('tableContainer').innerHTML = '<div class="loading" style="text-align:left;padding:10px;font-size:10px;font-family:monospace;white-space:pre-wrap;">RAW RESPONSE:\n' + JSON.stringify(response, null, 2).substring(0, 1000) + '</div>';
-        if (response && response.code === 3000 && response.data && response.data.length > 0) {
-            console.log('First record keys:', Object.keys(response.data[0]));
-            console.log('First record:', JSON.stringify(response.data[0]));
-            allRecords = response.data;
-            groupedQuotes = processRecords(allRecords);
-            updateKPIs(groupedQuotes);
-            renderTable(groupedQuotes);
-        } else if (response && response.code === 3100) {
-            document.getElementById('tableContainer').innerHTML = '<div class="no-data">No supplier quote records found.</div>';
-            updateKPIs({});
-        } else {
-            document.getElementById('tableContainer').innerHTML = '<div class="no-data">Unexpected response: ' + JSON.stringify(response).substring(0,300) + '</div>';
-            updateKPIs({});
-        }
-    }).catch(function(err) {
-        console.error('Widget error:', err);
-        document.getElementById('tableContainer').innerHTML = '<div class="no-data">API Error: ' + JSON.stringify(err).substring(0,300) + '</div>';
-    });
-}
-
-ZOHO.CREATOR.init().then(function() {
-    fetchData();
-    setInterval(fetchData, 30000);
-}).catch(function(err) {
-    document.getElementById('tableContainer').innerHTML = '<div class="no-data">Init error: ' + JSON.stringify(err) + '</div>';
-});
+        tableHtml += `</tbody></table>`;
+        document.getElementById('tableContainer').innerHTML = tableHtml;
+    }
 </script>
+
 </body>
 </html>

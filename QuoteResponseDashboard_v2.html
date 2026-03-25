@@ -156,8 +156,9 @@ var currentFilter = 'all';
 var currentSearch = '';
 var expandedQuote = null;
 
+var OWNER_NAME = 'mark_sentrymetal';
 var APP_NAME = 'type-formsheet-2-18-21';
-var REPORT_NAME = 'Supplier_Manufacture_Material_Report';
+var REPORT_NAME = 'All_Supplier_Manufacture_Material_Quotes';
 
 function getStatusInfo(svStatus) {
     if (!svStatus || svStatus === '') return { dot: 'dot-red', label: 'No response', noResponse: true };
@@ -376,12 +377,13 @@ function searchRecords(val) {
 function fetchData() {
     console.log('fetchData firing, APP:', APP_NAME, 'REPORT:', REPORT_NAME);
     ZOHO.CREATOR.API.getAllRecords({
-        appName: APP_NAME,
-        reportName: REPORT_NAME,
+        appLinkName: APP_NAME,
+        reportLinkName: REPORT_NAME,
         page: 1,
         pageSize: 200
     }).then(function(response) {
         console.log('API response:', JSON.stringify(response).substring(0, 500));
+        document.getElementById('tableContainer').innerHTML = '<div class="loading" style="text-align:left;padding:10px;font-size:10px;font-family:monospace;white-space:pre-wrap;">RAW RESPONSE:\n' + JSON.stringify(response, null, 2).substring(0, 1000) + '</div>';
         if (response && response.data && response.data.length > 0) {
             console.log('First record keys:', Object.keys(response.data[0]));
             console.log('First record:', JSON.stringify(response.data[0]));

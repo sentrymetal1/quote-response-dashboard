@@ -379,9 +379,7 @@ function fetchData() {
     console.log('fetchData firing, APP:', APP_NAME, 'REPORT:', REPORT_NAME);
     ZOHO.CREATOR.API.getAllRecords({
         appName: APP_NAME,
-        reportName: REPORT_NAME,
-        page: 1,
-        pageSize: 200
+        reportName: REPORT_NAME
     }).then(function(response) {
         console.log('API response:', JSON.stringify(response).substring(0, 500));
         document.getElementById('tableContainer').innerHTML = '<div class="loading" style="text-align:left;padding:10px;font-size:10px;font-family:monospace;white-space:pre-wrap;">RAW RESPONSE:\n' + JSON.stringify(response, null, 2).substring(0, 1000) + '</div>';

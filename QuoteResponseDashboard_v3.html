@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Quote Response Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://js.zohostatic.com/creator/widgets/version/1.0/widgetsdk-min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'DM Sans', sans-serif; font-size: 13px; background: #f3f5f8; }
@@ -384,16 +385,18 @@ function fetchData() {
     }).then(function(response) {
         console.log('API response:', JSON.stringify(response).substring(0, 500));
         document.getElementById('tableContainer').innerHTML = '<div class="loading" style="text-align:left;padding:10px;font-size:10px;font-family:monospace;white-space:pre-wrap;">RAW RESPONSE:\n' + JSON.stringify(response, null, 2).substring(0, 1000) + '</div>';
-        if (response && response.data && response.data.length > 0) {
+        if (response && response.code === 3000 && response.data && response.data.length > 0) {
             console.log('First record keys:', Object.keys(response.data[0]));
             console.log('First record:', JSON.stringify(response.data[0]));
             allRecords = response.data;
             groupedQuotes = processRecords(allRecords);
             updateKPIs(groupedQuotes);
             renderTable(groupedQuotes);
+        } else if (response && response.code === 3100) {
+            document.getElementById('tableContainer').innerHTML = '<div class="no-data">No supplier quote records found.</div>';
+            updateKPIs({});
         } else {
-            console.log('No data or empty response:', JSON.stringify(response));
-            document.getElementById('tableContainer').innerHTML = '<div class="no-data">No data returned. Response: ' + JSON.stringify(response).substring(0,200) + '</div>';
+            document.getElementById('tableContainer').innerHTML = '<div class="no-data">Unexpected response: ' + JSON.stringify(response).substring(0,300) + '</div>';
             updateKPIs({});
         }
     }).catch(function(err) {
@@ -402,17 +405,12 @@ function fetchData() {
     });
 }
 
-function waitForZOHO() {
-    if (typeof ZOHO !== 'undefined' && ZOHO.CREATOR && ZOHO.CREATOR.API) {
-        ZOHO.CREATOR.init().then(function() {
-            fetchData();
-            setInterval(fetchData, 30000);
-        });
-    } else {
-        setTimeout(waitForZOHO, 300);
-    }
-}
-waitForZOHO();
+ZOHO.CREATOR.init().then(function() {
+    fetchData();
+    setInterval(fetchData, 30000);
+}).catch(function(err) {
+    document.getElementById('tableContainer').innerHTML = '<div class="no-data">Init error: ' + JSON.stringify(err) + '</div>';
+});
 </script>
 </body>
 </html>

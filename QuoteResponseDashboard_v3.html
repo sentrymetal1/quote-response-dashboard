@@ -378,8 +378,8 @@ function searchRecords(val) {
 function fetchData() {
     console.log('fetchData firing, APP:', APP_NAME, 'REPORT:', REPORT_NAME);
     ZOHO.CREATOR.API.getAllRecords({
-        appLinkName: APP_NAME,
-        reportLinkName: REPORT_NAME,
+        appName: APP_NAME,
+        reportName: REPORT_NAME,
         page: 1,
         pageSize: 200
     }).then(function(response) {

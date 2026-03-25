@@ -395,10 +395,17 @@ function fetchData() {
     });
 }
 
-ZOHO.CREATOR.init().then(function() {
-    fetchData();
-    setInterval(fetchData, 30000);
-});
+function waitForZOHO() {
+    if (typeof ZOHO !== 'undefined' && ZOHO.CREATOR && ZOHO.CREATOR.API) {
+        ZOHO.CREATOR.init().then(function() {
+            fetchData();
+            setInterval(fetchData, 30000);
+        });
+    } else {
+        setTimeout(waitForZOHO, 300);
+    }
+}
+waitForZOHO();
 </script>
 </body>
 </html>
